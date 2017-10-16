@@ -1,0 +1,85 @@
+﻿<!--
+    CREATE DATABASE Inventory_Dev;
+
+    CREATE TABLE Machinery
+(
+MachineryId int not null auto_increment primary key,Date date,MachineryName nvarchar(50),
+PartyName  nvarchar(50),Particulars  nvarchar(50),SiteName nvarchar(50),
+Location nvarchar(50),Chinage nvarchar(50),StartingTime nvarchar(50),
+ClosingTime nvarchar(50),TotalWorkingHours  nvarchar(50),Remarks nvarchar(50)
+);
+
+CREATE TABLE MaterialsGroup1Received
+(
+RawMaterialId int not null auto_increment primary key,Date date,MachineryName nvarchar(50),UoM varchar(50),Qty int,
+Particulars  nvarchar(50),SiteName nvarchar(50),Location nvarchar(50),Chinage nvarchar(50),SupplierName nvarchar(50),GroupId int
+);
+
+CREATE TABLE MaterialsGroup2Received
+(
+DCNo int not null auto_increment primary key,Date date,Qty int,
+Particulars  nvarchar(50),SiteName nvarchar(50),Location nvarchar(50),Chinage nvarchar(50),
+SupplierName nvarchar(50),VehicleNo nvarchar(20),TransporterName nvarchar(50),GroupId int
+);
+
+CREATE TABLE DieselReceived
+(
+DieselReceivedId int not null auto_increment primary key,Date date,Qty int,
+Particulars  nvarchar(50),SiteName nvarchar(50),Chinage nvarchar(50),
+SupplierName nvarchar(50),Rate real,Amount real
+);
+
+CREATE TABLE MaterialsGroup1Consumed
+(
+MaterialsGroup1ConsumedId int not null auto_increment primary key,Date date,
+Particulars  nvarchar(50),SiteName nvarchar(50),Chinage nvarchar(50),Location nvarchar(50),
+ApprovedBy nvarchar(50),UoM nvarchar(50),Qty int,ClosingQty int,IssuedBy nvarchar(50),GroupId int
+);
+
+CREATE TABLE MaterialsGroup2Consumed
+(
+MaterialsGroup2ConsumedId int not null auto_increment primary key,Date date,
+Particulars  nvarchar(50),SiteName nvarchar(50),Chinage nvarchar(50),Location nvarchar(50),
+Qty int,ClosingQty int,IssuedBy nvarchar(50),GroupId int
+);
+
+CREATE TABLE DieselConsumed
+(
+DieselConsumedId int not null auto_increment primary key,Date date,
+Particulars  nvarchar(50),Machinery nvarchar(50),SiteName nvarchar(50),Chinage nvarchar(50),
+Qty int,ClosingQty int,FilledBy nvarchar(50)
+);
+
+CREATE TABLE MaterialGroup
+(
+GroupId  int not null auto_increment primary key,
+GroupName nvarchar(30)
+);
+
+INSERT INTO MATERIALGROUP (GroupName) values ('EarthWork');
+INSERT INTO MATERIALGROUP (GroupName) values ('Concrete');
+INSERT INTO MATERIALGROUP (GroupName) values ('Cement');
+INSERT INTO MATERIALGROUP (GroupName) values ('Steel');
+INSERT INTO MATERIALGROUP (GroupName) values ('Gravel');
+INSERT INTO MATERIALGROUP (GroupName) values ('Sand');
+INSERT INTO MATERIALGROUP (GroupName) values ('Metal');
+INSERT INTO MATERIALGROUP (GroupName) values ('CementConsumption');
+INSERT INTO MATERIALGROUP (GroupName) values ('SteelConsumption');
+INSERT INTO MATERIALGROUP (GroupName) values ('GravelConsumption');
+INSERT INTO MATERIALGROUP (GroupName) values ('SandConsumption');
+INSERT INTO MATERIALGROUP (GroupName) values ('MetalConsumption');
+INSERT INTO MATERIALGROUP (GroupName) values ('Expenses');
+INSERT INTO MATERIALGROUP (GroupName) values ('Machinery');
+-->
+
+<!--var currentID = e.model.DCNo;
+							var data = this.dataSource.data();
+
+							for(item in data){
+								if(data[item].DCNo == currentID )
+								{
+									e.preventDefault();
+									alert("Duplicates not allowed");
+									return false;
+								}
+							}-->

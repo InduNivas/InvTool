@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="font-awesome.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/expensesTwo.css"/>
+	<link rel="stylesheet" type="text/css" href="css/expensesTwoStandard.css"/>
+	<script src="Scripts/jquery-1.9.1.js"></script>
+
+</head>
+<body>
+	<!--nav sidebar -->
+
+<aside>
+  
+      <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+<div class="nav-side-menu">
+    <div class="brand">Siri Constructions Inventory Tool</div>
+    <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+  
+        <div class="menu-list">
+  
+            <ul id="menu-content" class="menu-content">
+                
+
+                <li data-toggle="collapse" data-target="#service" class="collapsed">
+                  <a href="#"><i class="fa fa-globe fa-lg"></i> Stock Deliverables <span class="arrow"></span></a>
+                </li>  
+                <ul class="sub-menu" id="service">
+				<li><a href="/Expenses"><i class="fa fa-money fa-lg"></i> Expenses </span></a></li>
+                  <li><a href="/Machinery"><i class="fa fa-life-bouy fa-lg"></i> Machinery </span></a></li>
+                  <li><a href="/EarthWork"><i class="fa fa-building-o fa-lg"></i> Earth Work </span></a></li>
+				  <li><a href="/Concrete"><i class="fa fa-road fa-lg"></i> Concrete </span></a></li>
+				  <li><a href="/Gravel"><i class="fa fa-road fa-lg"></i> Gravel </span></a></li>
+				  <li><a href="/Sand"><i class="fa fa-road fa-lg"></i> Sand </span></a></li>
+				  <li><a href="/Metal"><i class="fa fa-road fa-lg"></i> Metal </span></a></li>
+				  <li><a href="/Diesel"><i class="fa fa-road fa-lg"></i> Diesel </span></a></li>
+				  <li><a href="/Cement"><i class="fa fa-road fa-lg"></i> Cement </span></a></li>
+				   <li><a href="/Steel"><i class="fa fa-road fa-lg"></i> Steel </span></a></li>
+				   <li><a href="/NMR"><i class="fa fa-road fa-lg"></i> NMR </span></a></li>
+				   <li><a href="/RMC"><i class="fa fa-road fa-lg"></i> RMC </span></a></li>
+                </ul>
+
+
+                <li data-toggle="collapse" data-target="#new" class="collapsed">
+                  <a href="#"><i class="fa fa-user fa-lg"></i> Inventory Master <span class="arrow"></span></a>
+                </li>
+                
+                 <li>
+                  <a href="#">
+                  <i class="fa fa-bar-chart-o fa-lg"></i> Reports
+                  </a>
+                  </li>
+
+            </ul>
+     </div>
+</div>
+
+  
+</aside>
+
+
+</body>
+<script>
+    function htmlbodyHeightUpdate(){
+		var height3 = $( window ).height()
+		var height1 = $('.nav').height()+50
+		height2 = $('.main').height()
+		if(height2 > height3){
+			$('html').height(Math.max(height1,height3,height2)+10);
+			$('body').height(Math.max(height1,height3,height2)+10);
+		}
+		else
+		{
+			$('html').height(Math.max(height1,height3,height2));
+			$('body').height(Math.max(height1,height3,height2));
+		}
+		
+	}
+	$(document).ready(function () {
+		htmlbodyHeightUpdate()
+		$( window ).resize(function() {
+			htmlbodyHeightUpdate()
+		});
+		$( window ).scroll(function() {
+			height2 = $('.main').height()
+  			htmlbodyHeightUpdate()
+		});
+	});
+</script>
+</html>

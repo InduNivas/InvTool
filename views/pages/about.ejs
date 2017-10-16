@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <base href="http://demos.telerik.com/kendo-ui/grid/editing-custom">
+    <style>html { font-size: 14px; font-family: Arial, Helvetica, sans-serif; }</style>
+    <title></title>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.material.mobile.min.css" />
+ 
+    <script src="https://kendo.cdn.telerik.com/2017.3.913/js/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.3.913/js/kendo.all.min.js"></script>
+   
+ 
+</head>
+<body>
+        <script src="../content/shared/js/products.js"></script>
+        <div id="example">
+              <span class="fa-inr"></span>
+            <div id="grid"></div>
+                    
+            <script>
+										var dataVal1 = [ {ProductID:1,ProductName:"Beverages1",Category:{CategoryID:1,CategoryName:"Beverages1"},UnitPrice:"$11"},
+                                                       {ProductID:2,ProductName:"Condiments1",Category:"Beverages1",UnitPrice:"$11"},
+                                                       {ProductID:3,ProductName:"Confections1",Category:"Beverages1",UnitPrice:"$11"},
+                                                       {ProductID:4,ProductName:"Dairy Products1",Category:"Beverages1",UnitPrice:"$11"},
+                                                       {ProductID:5,ProductName:"Grains/Cereals1",Category:"Beverages1",UnitPrice:"$11"},
+                                                       {ProductID:6,ProductName:"Test",Category:"Beverages1",UnitPrice:"$11"},
+                                                       ];
+                $(document).ready(function () {
+                    var dataSource = new kendo.data.DataSource({
+                       pageSize: 20,
+                       data: dataVal1,
+                       autoSync: true,
+                       schema: {
+                           model: {
+                             id: "ProductID",
+                             fields: {
+                                ProductID: { editable: false, nullable: true },
+                                ProductName: { validation: { required: true } },
+                                Category: { defaultValue: { CategoryID: 1, CategoryName: "Beverages"} },
+                                UnitPrice: { type: "number", validation: { required: true, min: 1} }
+                             }
+                           }
+                       }
+                    });
+ 
+                    $("#grid").kendoGrid({
+                        dataSource: dataSource,
+                        pageable: true,
+                        height: 550,
+                        toolbar: ["create"],
+                        columns: [
+                            { field:"ProductName",title:"Product Name" },
+                            { field: "Category", title: "Category", width: "180px", editor: categoryDropDownEditor, template: "#=Category.CategoryName#" },
+                            { field: "UnitPrice", title:"Unit Price", format: "{0:c}", width: "130px" },
+							{ command: ["edit","destroy"],
+
+								title: "&nbsp;", width: "120px"
+
+							}],
+									editable: "inline"
+								});
+							});
+				 
+                function categoryDropDownEditor(container, options) {
+                           var dataVal = [
+                                                       {CategoryID:1,CategoryName:"Beverages1"},
+                                                       {CategoryID:2,CategoryName:"Condiments1"},
+                                                       {CategoryID:3,CategoryName:"Confections1"},
+                                                       {CategoryID:4,CategoryName:"Dairy Products1"},
+                                                       {CategoryID:5,CategoryName:"Grains/Cereals1"},
+                                                       {CategoryID:6,CategoryName:"Test"},
+                                                       ];
+                    $('<input required name="' + options.field + '"/>')
+                        .appendTo(container)
+                        .kendoDropDownList({
+                            autoBind: false,
+                            dataTextField: "CategoryName",
+                            dataValueField: "CategoryID",
+                            dataSource: {
+                                data:dataVal
+                                }
+                           
+                        });
+                }
+ 
+            </script>
+        </div>
+ 
+ 
+</body>
+</html>

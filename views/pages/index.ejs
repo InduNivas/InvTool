@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Login</title>
+    <link href="Content/css/Site.css" rel="stylesheet" />
+    <link href="Content/css/bootstrap.css" rel="stylesheet" />
+    <script src="Scripts/jquery-1.9.1.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+	<% include ../partials/head %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+</head>
+<body >
+<header>
+        <% include ../partials/header %>
+    </header>
+	 <main>
+    <div class="container" >
+        <div class="card card-container" id="result"  >
+            <div style="text-align:center">
+                <label class="btn-default" style="text-align:center">Login</label>
+            </div>
+            <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+            <p id="profile-name" class="profile-name-card"></p>
+            <form class="form-signin">
+                <span id="reauth-email" class="reauth-email"></span>
+                <input type="email" id="inputEmail" class="form-control" placeholder="User Name" required autofocus>
+				<label class="btn-danger" style="text-align:center" id="emailError" hidden ></label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+				<label class="btn-danger" style="text-align:center" id="emailPassword" hidden ></label>
+                <div id="remember" class="checkbox">
+                    <label>
+                        <input type="checkbox" value="remember-me"> Remember me
+                    </label>
+                </div>
+				
+                <button class="btn btn-lg btn-primary btn-block btn-signin" id="change" type="submit">                
+                Sign in</button>
+
+				
+            </form>
+           
+		   +
+        </div>
+
+        
+    </div>
+	</main>
+	<script>
+    var $result = $('#result'); 
+    $('#change').click(function() {
+	
+	$result.load('/expensesTwo');
+	
+	
+       
+    });
+	</script>
+</body>
+</html>

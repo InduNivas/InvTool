@@ -1,0 +1,240 @@
+﻿<html>
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siri Constructions Inventory Tool</title>
+    <!--<link href="Content/css/Site.css" rel="stylesheet" />-->
+    <link href="Content/css/bootstrap.css" rel="stylesheet" />
+    <script src="Scripts/jquery-1.9.1.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+	 
+    <link href="Content/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.common.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.rtl.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.silver.min.css"/>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.mobile.all.min.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.3.913/js/kendo.all.min.js"></script>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.default.min.css">
+<script src="https://kendo.cdn.telerik.com/2017.3.913/js/angular.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2017.3.913/js/jszip.min.js"></script>
+    <script type="text/javascript">
+        $(window).load(function () {
+            $("#loading").fadeOut("slow");
+        });
+    </script>
+    <style>
+        .k-header.k-grid-toolbar
+        {
+            width:200px;
+            height:25px;
+            font:bold;
+        }
+        .k-grid td {
+            padding: 0;
+            text-align:center;
+        }
+		
+    </style>
+	
+	
+</head>
+
+<body>
+
+    <div class="row">
+        <div class="col-sm-3">
+		 <% include ../partials/leftMenu %>
+        </div>
+        <div class="col-sm-9">
+		<% include ../partials/header %>
+		<h3>LABOUR</h3>
+		<div id="grid"></div>
+		<h3>Male</h3>
+		<h3>Female</h3>
+		<h3>Mason</h3>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+
+		var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function (e) {
+						$.ajax({url: "/services/NMRDetails", type:"get",
+							success: function(result){
+								var nmrDetails = result.nmrDetails;
+								 e.success(nmrDetails);
+							}
+						});
+                    },
+                    create: function (e) {
+						$.ajax({url: "/services/NMRDetails/Create", type:"POST",
+							data:e.data,
+							success: function(result){
+								e.success();
+							}
+						});						 
+                    },
+                    update: function (e) {
+						$.ajax({url: "/services/NMRDetails/Update", type:"POST",
+							data:e.data,
+							success: function(result){
+								e.success();
+							}
+						});
+                    },
+                    destroy: function (e) {
+					$.ajax({url: "/services/NMRDetails/Delete", type:"POST",
+							data:e.data,
+							success: function(result){
+								e.success();
+							}
+						});
+                    }
+                },
+                error: function (e) {
+                    alert("Status: " + e.status + "; Error message: " + e.errorThrown);
+                },
+		
+        schema: {
+			model: {
+			id: "NMRId",
+				fields: {
+					NMRId: { editable:false },
+					Date: { type: "date",validation: { required: true} },
+					Particulars: { type: "text", validation: { required: true} },
+					Chinage: { type: "text",validation: { required: true} },
+					SiteName: { type: "text",validation: { required: true}},
+					Location: { defaultValue: { Id: 0, LocationName: "-Select-"} },
+					Male: { type: "text",validation: { required: true} },
+					Female: { type: "text",validation: { required: true} },
+					Mason: { type: "text",validation: { required: true} },
+					Description : { type: "text",validation: { required: true}},
+					}
+				}
+			},
+        pageSize: 20
+        });
+		$("#grid").kendoGrid({
+		dataSource: dataSource,
+        height: 350,
+        scrollable: true,
+        sortable: true,
+        pageable: {
+        input: true,
+        numeric: false
+        },
+        toolbar: ["create"],
+        columns: [
+		{
+        field: "Date",
+        title: "Date",
+        width: 70,
+        height:25,
+		template: "#= kendo.toString(kendo.parseDate(Date, 'yyyy-MM-dd'), 'dd/MM/yyyy') #"
+        },
+        {
+        field: "Particulars",
+        title: "Particulars",
+        width: 70
+        },
+		{
+        field: "SiteName",
+        title: "Site Name",
+        height: 25,
+        width: 70
+        },
+		{
+        field: "Chinage",
+        title: "Chinage",
+        height:25,
+        width: 60
+        },
+        {
+        field: "Location",
+        title: "Location",
+        height: 25,
+        width: 80,
+		width: 60,editor: Locations, template: "#=Location.LocationName#"
+        }, 
+        {
+        field: "Male",
+        title: "Male",
+        height: 25,
+        width: 60
+        },
+        {
+        field: "Female",
+        title: "Female",
+        height: 25,
+        width: 80
+        },
+        {
+        field: "Mason",
+        title: "Mason",
+        height: 25,
+        width: 80
+        },
+        {
+        field: "Description",
+        title: "Description",
+        height: 25,
+        width: 80
+        },
+        { 
+		command: ["edit","destroy"], 
+		title: "&nbsp;", width: "120px" 
+		}],
+        editable: "inline"
+       });
+     });
+
+	 function particularsDropDownEditor(container, options) {
+            $('<input name="' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    dataTextField: "ParticularsName",
+                    dataValueField: "Id",
+                    dataSource: {
+						transport: {
+                                    read: function (e) {
+									$.ajax({url: "/services/particularsMasterByGroupId", type:"get",data:{groupId:3},
+										success: function(result){
+											var particularsMasterInfo = result.particularsMaster;
+											e.success(particularsMasterInfo);
+							        }
+							    });
+							},
+						}
+                    }
+                });
+             }
+
+		function Locations(container, options) {
+            $('<input name="' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    dataTextField: "LocationName",
+                    dataValueField: "Id",
+                    dataSource: {
+						transport: {
+                                    read: function (e) {
+									$.ajax({url: "/services/locations", type:"get",
+										success: function(result){
+											var LocationNames = result.LocationNames;
+											e.success(LocationNames);
+							        }
+							    });
+							},
+						}
+                    }
+                });
+             }
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+﻿<html>
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siri Constructions Inventory Tool</title>
+    <!--<link href="Content/css/Site.css" rel="stylesheet" />-->
+    <link href="Content/css/bootstrap.css" rel="stylesheet" />
+    <script src="Scripts/jquery-1.9.1.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+	 
+    <link href="Content/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.common.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.rtl.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.silver.min.css"/>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.mobile.all.min.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.3.913/js/kendo.all.min.js"></script>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.default.min.css">
+<script src="https://kendo.cdn.telerik.com/2017.3.913/js/angular.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2017.3.913/js/jszip.min.js"></script>
+    <script type="text/javascript">
+        $(window).load(function () {
+            $("#loading").fadeOut("slow");
+        });
+    </script>
+    <style>
+        .k-header.k-grid-toolbar
+        {
+            width:200px;
+            height:25px;
+            font:bold;
+        }
+        .k-grid td {
+            padding: 0;
+            text-align:center;
+        }
+		
+    </style>
+	
+	
+</head>
+
+<body>
+
+    <div class="row">
+        <div class="col-sm-3">
+		 <% include ../partials/leftMenu %>
+        </div>
+        <div class="col-sm-9">
+		<% include ../partials/header %>
+		<h3>Expenses</h3>
+				<div id="grid"></div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+		var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function (e) {
+						$.ajax({url: "/services/expenses", type:"get",
+							success: function(result){
+								var expensesInfo = result.expensesInfo;
+								var sampleDataNextID = expensesInfo.length + 1;
+								 e.success(expensesInfo);
+							}
+						});
+                    },
+                    create: function (e) {
+						$.ajax({url: "/services/expenses/Create", type:"POST",
+							data:e.data,
+							success: function(result){
+								e.success();
+							}
+						});						 
+                    },
+                    update: function (e) {
+					var metal; 
+					var sampleDataNextID;
+						$.ajax({url: "/services/expenses/Update", type:"POST",
+							data:e.data,
+							success: function(result){
+								e.success();
+							}
+						});
+                    },
+                    destroy: function (e) {
+					$.ajax({url: "/services/expenses/Delete", type:"POST",
+							data:e.data,
+							success: function(result){
+								e.success();
+							}
+						});
+                    }
+                },
+                error: function (e) {
+                    alert("Status: " + e.status + "; Error message: " + e.errorThrown);
+                },
+		
+        schema: {
+			model: {
+			id: "ExpenseID",
+				fields: {
+					ExpenseID: { type:"number" },
+					Date: { type: "date",validation: { required: true} },
+					Particulars: { type: "number", validation: { required: true, min: 1} },
+					Ref: { type: "text",validation: { required: true} },
+					SiteName: { type: "text",validation: { required: true}},
+					ApprovedBy: { type: "text",validation: { required: true} },
+					Receipt: { type: "text",validation: { required: true} },
+					Payment: { type: "number",validation: { required: true} },
+					ClosingBalance: { type: "number",validation: { required: true} },
+					Narration: { type: "text",validation: { required: true}},
+					}
+				}
+			},
+        pageSize: 20
+        });
+
+		$("#grid").kendoGrid({
+		dataSource: dataSource,
+        height: 550,
+        scrollable: true,
+        sortable: true,
+        pageable: {
+        input: true,
+        numeric: false
+        },
+        toolbar: ["create"],
+        columns: [
+		
+		{
+        field: "Date",
+        title: "Date",
+        width: 80,
+        height:25,
+		template: "#= kendo.toString(kendo.parseDate(Date, 'd/M/yyyy'), 'd/M/yyyy') #"
+        },
+        {
+        field: "Particulars",
+        title: "Particulars",
+        width: 70
+        }, {
+        field: "Ref",
+        title: "Ref",
+        height:25,
+        width: 60
+        },
+
+        {
+        field: "SiteName",
+        title: "Site Name",
+        height: 25,
+        width: 80
+        },
+        {
+        field: "ApprovedBy",
+        title: "Approved By",
+        height: 25,
+        width: 80
+        }, {
+        field: "Receipt",
+        title: "Receipt",
+        height: 25,
+        width: 70
+        },
+        {
+        field: "Payment",
+        title: "Payment",
+        height: 25,
+        width: 60
+        },
+        {
+        field: "ClosingBalance",
+        title: "Closing Balance",
+        height: 25,
+        width: 90
+        },
+        {
+        field: "Narration",
+        title: "Narration",
+        height: 15,
+        width: 80
+        },
+        { command: ["edit","destroy"], 
+		
+		title: "&nbsp;", width: "120px" 
+		
+		}],
+        editable: "inline"
+                    });
+					
+        });
+
+		
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+
+	<link rel="stylesheet" type="text/css" href="css/Site.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="font-awesome.min.css" />
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+</head>
+<body class="container" id = "result3">
+    <main>
+	<form class="form-signin" name="myform" onsubmit="return onsubmitform();">
+	<div class="container">
+        <div class="card card-container">
+            <div style="text-align:center">
+                <label class="btn-default" style="text-align:center">Login</label>
+            </div>
+            <!-- <img class="profile-img-card" src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" alt="" /> -->
+            <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+            <p id="profile-name" class="profile-name-card"></p>
+			<div class="form-signin">
+                <span id="reauth-email" class="reauth-email"></span>
+                <input type="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                <label class="alert-danger" style="text-align:center" id="invalidInput" hidden >Invalid Email/password</label>
+                <button class="btn btn-lg btn-primary btn-block btn-signin" id="btn1" type="submit">                
+                Sign in</button>
+                
+            <a href="/passwordReset" class="forgot-password">
+                Forgot the password?
+            </a>
+			</div>
+        </div><!-- /card-container -->
+    </div>
+	</form>
+    </main>
+
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+
+</body>
+<% var userInfo = UserInfo %>
+<script>
+	var id = '<%- userInfo.UserId%>';
+	var pwd = '<%- userInfo.password%>';
+    var $result = $('#result3'); 
+    $('#btn1').click(function() {
+	if($('#inputEmail').val() != '' && $('#inputPassword').val() != '')
+	{
+	    if($('#inputEmail').val() == id && $('#inputPassword').val() == pwd)
+		{
+			if('<%-userInfo.IsFirstLogin%>' == '1')
+			  {
+			   $result.load('/passwordReset');
+			  }
+			  else
+			  {
+				$result.load('/expenses');
+			  }
+		}
+		else
+		{
+			$('#invalidInput').show();
+			return false;
+		}
+	}
+	});
+	function onsubmitform()
+	{
+  if('<%-userInfo.IsFirstLogin%>' == '1')
+  {
+   document.myform.action =('/passwordReset');
+  }
+  else
+  {
+    document.myform.action =('/expenses');
+  }
+ 
+}
+
+	</script>
+</html>

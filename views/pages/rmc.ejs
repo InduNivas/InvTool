@@ -1,0 +1,337 @@
+﻿<html>
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siri Constructions Inventory Tool</title>
+    <!--<link href="Content/css/Site.css" rel="stylesheet" />-->
+    <link href="Content/css/bootstrap.css" rel="stylesheet" />
+    <script src="Scripts/jquery-1.9.1.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+	 
+    <link href="Content/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.common.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.rtl.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.silver.min.css"/>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.mobile.all.min.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.3.913/js/kendo.all.min.js"></script>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.913/styles/kendo.default.min.css">
+<script src="https://kendo.cdn.telerik.com/2017.3.913/js/angular.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2017.3.913/js/jszip.min.js"></script>
+    <script type="text/javascript">
+        $(window).load(function () {
+            $("#loading").fadeOut("slow");
+        });
+    </script>
+    <style>
+        .k-header.k-grid-toolbar
+        {
+            width:200px;
+            height:25px;
+            font:bold;
+        }
+        .k-grid td {
+            padding: 0;
+            text-align:center;
+        }
+		
+    </style>
+	
+	
+</head>
+
+<body>
+
+    <div class="row">
+        <div class="col-sm-3">
+		 <% include ../partials/leftMenu %>
+        </div>
+        <div class="col-sm-9">
+		<% include ../partials/header %>
+		<h3>RMC</h3>
+		
+		<div id="grid"></div>
+		<h3>Consumption</h3>
+		<div id="gridConsumption"></div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+
+		var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function (e) {
+						$.ajax({url: "/services/RMCReceived", type:"get",
+							success: function(result){
+								var RMCDetails = result.RMCReceivedInfo;
+								 e.success(RMCDetails);
+							}
+						});
+                    },
+                    create: function (e) {
+					
+						$.ajax({url: "/services/RMCReceived/Create", type:"POST",
+							data:e.data,
+							success: function(result){
+								e.success();
+							}
+						});						 
+                    },
+                    update: function (e) {
+						$.ajax({url: "/services/RMCReceived/Update", type:"POST",
+							data:e.data,
+							success: function(result){
+								e.success();
+							}
+						});
+                    },
+                    destroy: function (e) {
+					$.ajax({url: "/services/RMCReceived/Delete", type:"POST",
+							data:e.data,
+							success: function(result){
+								e.success();
+							}
+						});
+                        // locate item in original datasource and remove it
+                        
+                        // on failure
+                        //e.error("XHR response", "status code", "error message");
+                    }
+                },
+                error: function (e) {
+                    // handle data operation error
+                    alert("Status: " + e.status + "; Error message: " + e.errorThrown);
+                },
+		
+        schema: {
+			model: {
+			id: "DCNo",
+				fields: {
+					DCNo: { editable:false },
+					Date: { type: "date",validation: { required: true} },
+					Particulars: { type: "text", validation: { required: true} },
+					SiteName: { type: "text",validation: { required: true}},
+					Qty: { type: "number",validation: { required: true} },
+					UoM: { type: "text",validation: { required: true}},
+					Labour: { type: "text",validation: { required: true}},
+					TruckNo: { type: "number",validation: { required: true}}
+					}
+				}
+			},
+        pageSize: 20
+        });
+
+		$("#grid").kendoGrid({
+		dataSource: dataSource,
+        height: 350,
+        scrollable: true,
+        sortable: true,
+        pageable: {
+        input: true,
+        numeric: false
+        },
+        toolbar: ["create"],
+        columns: [
+		
+		{
+        field: "Date",
+        title: "Date",
+        width: 70,
+        height:25,
+		template: "#= kendo.toString(kendo.parseDate(Date, 'yyyy-MM-dd'), 'dd/MM/yyyy') #"
+        },
+		{
+        field: "DCNo",
+        title: "DCNo",
+        width: 70
+        },
+        {
+        field: "Particulars",
+        title: "Particulars",
+        width: 70
+        },
+		{
+        field: "SiteName",
+        title: "Site Name",
+        height: 25,
+        width: 70
+        },
+        {
+        field: "Qty",
+        title: "Qty  in Units",
+        height: 25,
+        width: 80
+        }, 
+        {
+        field: "UoM",
+        title: "UoM",
+        height: 25,
+        width: 60
+        },
+		
+        {
+        field: "Labour",
+        title: "Labour",
+        height: 25,
+        width: 80
+        },
+		
+        {
+        field: "TruckNo",
+        title: "Truck No",
+        height: 25,
+        width: 80
+        },
+        
+        { command: ["edit","destroy"], 
+		
+		title: "&nbsp;", width: "120px" 
+		
+		}],
+        editable: "inline"
+                    });
+		
+		//Consumption grid
+			var dataSourceConsumption = new kendo.data.DataSource({
+                transport: {
+                    read: function (e) {
+                        $.ajax({
+                            url: "/services/RMCConsumed", type: "get",
+                            success: function (result) {
+                                var RMCConsumedMaterials = result.rmcConsumedInfo;
+                                e.success(RMCConsumedMaterials);
+                            }
+                        });
+                    },
+                    create: function (e) {
+                        $.ajax({
+                            url: "/services/RMCConsumed/Create", type: "POST",
+                            data: e.data,
+                            success: function (result) {
+                                e.success();
+                            }
+                        });
+                    },
+                    update: function (e) {
+                        $.ajax({
+                            url: "/services/RMCConsumed/Update", type: "POST",
+                            data: e.data,
+                            success: function (result) {
+                                e.success();
+                            }
+                        });
+                    },
+                    destroy: function (e) {
+                        $.ajax({
+                            url: "/services/RMCConsumed/Delete", type: "POST",
+                            data: e.data,
+                            success: function (result) {
+                                e.success();
+                            }
+                        });
+                    }
+                },
+                error: function (e) {
+                    alert("Status: " + e.status + "; Error message: " + e.errorThrown);
+                },
+
+                schema: {
+                    model: {
+                         id: "RMCConsumedId",
+                        fields: {
+                            RMCConsumedId: { type: "number" },
+                            Date: { type: "date", validation: { required: true } },
+                            Particulars: { defaultValue: { Id: 0, ParticularsName: "-Select-"} },
+                            Qty: { type: "number", validation: { required: true } },
+                            RMCPlant: { type: "text", validation: { required: true } },
+                            UoM: { type: "text", validation: { required: true } },
+                            SiteName: { type: "text", validation: { required: true } },
+							}
+                    }
+                },
+                pageSize: 20
+            });
+
+            $("#gridConsumption").kendoGrid({
+                dataSource: dataSourceConsumption,
+                height: 350,
+                scrollable: true,
+                sortable: true,
+                pageable: {
+                    input: true,
+                    numeric: false
+                },
+                toolbar: ["create"],
+                columns: [
+                {
+                    field: "Date",
+                    title: "Date",
+                    width: 70,
+                    height: 25,
+                    template: "#= kendo.toString(kendo.parseDate(Date, 'yyyy-MM-dd'), 'dd/MM/yyyy') #"
+                },
+                {
+                    field: "Particulars",
+                    title: "Particulars",
+                    width: 70,editor: particularsDropDownEditor, template: "#=Particulars.ParticularsName#"
+                },
+                {
+                    field: "Qty",
+                    title: "Qty in units",
+                    height: 25,
+                    width: 80
+                },
+                {
+                    field: "RMCPlant",
+                    title: "RMC Plant",
+                    height: 25,
+                    width: 60
+                },
+				{
+                    field: "UoM",
+                    title: "UoM",
+                    height: 25,
+                    width: 60
+                },
+				{
+                    field: "SiteName",
+                    title: "Site Name",
+                    height: 25,
+                    width: 60
+                },
+                {
+                    command: ["edit", "destroy"],
+                    title: "&nbsp;", width: "120px"
+                }],
+                editable: "inline"
+            });
+					
+        });
+
+		function particularsDropDownEditor(container, options) {
+            $('<input name="' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    dataTextField: "ParticularsName",
+                    dataValueField: "Id",
+                    dataSource: {
+						transport: {
+                                    read: function (e) {
+									$.ajax({url: "/services/particularsMasterByGroupId", type:"get",data:{groupId:17},
+										success: function(result){
+											var particularsMasterInfo = result.particularsMaster;
+											e.success(particularsMasterInfo);
+							        }
+							    });
+							},
+						}
+                    }
+                });
+             }
+    </script>
+
+</body>
+</html>
